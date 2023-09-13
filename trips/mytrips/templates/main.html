@@ -1,0 +1,29 @@
+{% extends "master.html" %}
+
+{% block title %}
+My Trips
+{% endblock %}
+
+
+{% block content %}
+<h1>My Trips</h1>
+
+<br>
+<p>{{stats.trips}} trips</p>
+<p>{{stats.total_duration}} days traveling</p>
+<p>{{stats.countries}} countries</p>
+<p>{{stats.cities}} cities</p>
+<p>{{stats.continents}} continents</p>
+<br>
+<h1>Trips</h1>
+<ul>
+    {% for x in trips %}
+    <li>{{ x.title }} - {{x.duration}} days</li>
+    {% endfor %}
+</ul>
+
+
+<p>All <a href="countries/">countries</a></p>
+<p>All <a href="cities/">cities</a></p>
+
+{% endblock %}

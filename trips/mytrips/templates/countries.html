@@ -1,0 +1,17 @@
+{% extends "master.html" %}
+
+{% block title %}
+My Trips - List of countries
+{% endblock %}
+
+{% block content %}
+
+<p><a href="/">HOME</a></p>
+<h1>Countries</h1>
+<ul>
+    {% for x in countries %}
+    <li><a href="{{ x.id }}">{{ x.name }}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

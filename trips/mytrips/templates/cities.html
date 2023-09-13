@@ -1,0 +1,28 @@
+{% extends "master.html" %}
+
+{% block title %}
+My Trips - List of cities
+{% endblock %}
+
+{% block content %}
+
+<p><a href="/">HOME</a></p>
+
+<h1>Cities</h1>
+
+<table border='1'>
+    <tr>
+        <th>City</th>
+        <th>Country</th>
+        <th>Visited</th>
+    </tr>
+    {% for x in cities %}
+    <tr>
+        <td>{{ x.name }}</td>
+        <td>{{ x.country__name }}</td>
+        <td>{{ x.visited }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
