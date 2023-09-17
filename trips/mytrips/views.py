@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.template import loader
 from .models import Country, City, Trip
 from django.db.models import Sum
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def main(request):
@@ -21,7 +22,7 @@ def main(request):
 
 
 def countries(request):
-    all_countries = Country.objects.all().values()
+    all_countries = Country.objects.filter(visited=True).values()
     template = loader.get_template("countries.html")
     context = {
         "countries": all_countries,
@@ -30,6 +31,7 @@ def countries(request):
 
 
 def country_details(request, id):
+    # TODO: country doesn't exist
     country = Country.objects.get(id=id)
     template = loader.get_template("country_details.html")
     context = {
@@ -44,4 +46,11 @@ def cities(request):
     context = {
         "cities": mydata,
     }
+    return HttpResponse(template.render(context, request))
+
+
+def trip_details(request, id):
+    trip = Trip.objects.get(id=id)
+    template = loader.get_template("trip_details.html")
+    context = {"trip": trip, "stops": []}
     return HttpResponse(template.render(context, request))
