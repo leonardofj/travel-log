@@ -1,18 +1,16 @@
 {% extends "master.html" %}
 
 {% block title %}
-My Trips - {{ country.name }}
+- {{ country.name }}
 {% endblock %}
 
 
 {% block content %}
 
-<p><a href="/">HOME</a></p>
 <h1>{{ country.name }}</h1>
 
 <p>Visited: {{ country.visited }}</p>
 <p>Need visa: {{ country.need_visa }}</p>
 
-<p>Back to <a href="/countries">Countries</a></p>
 
 {% endblock %}
