@@ -1,29 +1,54 @@
 {% extends "master.html" %}
-
-{% block title %}
-My Trips
-{% endblock %}
-
-
 {% block content %}
 <h1>My Trips</h1>
-
-<br>
-<p>{{stats.trips}} trips</p>
-<p>{{stats.total_duration}} days traveling</p>
-<p>{{stats.countries}} countries</p>
-<p>{{stats.cities}} cities</p>
-<p>{{stats.continents}} continents</p>
-<br>
-<h1>Trips</h1>
-<ul>
-    {% for x in trips %}
-    <li>{{ x.title }} - {{x.duration}} days</li>
-    {% endfor %}
-</ul>
-
-
-<p>All <a href="countries/">countries</a></p>
-<p>All <a href="cities/">cities</a></p>
+<hr />
+<div class="float-start">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <span class="badge bg-primary" style="color: white">
+                {{stats.trips}}
+            </span>
+            Trips
+        </li>
+        <li class="list-group-item">
+            <span class="badge bg-primary" style="color: white">
+                {{stats.total_duration}}
+            </span>
+            days traveling
+        </li>
+        <li class="list-group-item">
+            <span class="badge bg-primary" style="color: white">
+                {{stats.countries}}
+            </span>
+            countries
+        </li>
+        <li class="list-group-item">
+            <span class="badge bg-primary" style="color: white">
+                {{stats.cities}}
+            </span>
+            cities
+        </li>
+        <li class="list-group-item">
+            <span class="badge bg-primary" style="color: white">
+                {{stats.continents}}
+            </span>
+            continents
+        </li>
+    </ul>
+</div>
+<div class="float-start ms-2">
+    <div>
+        {% for x in trips %}
+        <div class="card float-start rounded m-1 shadow" style="width:300px;">
+            <div class="card-body">
+                <h5 class="card-title"><a class="stretched-link text-reset text-decoration-none"
+                        href="trips/{{ x.id }}">
+                        {{ x.title }}</a></h5>
+                <p class="card-text">{{ x.duration }} days</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}

@@ -31,6 +31,7 @@ class City(models.Model):
     )
     lat = models.DecimalField(max_digits=9, decimal_places=6)
     lon = models.DecimalField(max_digits=9, decimal_places=6)
+    state = models.CharField(max_length=255, null=True)
 
     class Meta:
         verbose_name_plural = "Cities"

@@ -159,4 +159,5 @@ cython_debug/
 #.idea/
 
 trips/mytrips/migrations/
+trips/mytrips/static/admin
 .vscode

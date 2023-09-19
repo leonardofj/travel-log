@@ -4,13 +4,13 @@ from .models import Country, City, Stop, Trip
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
-    list_display = ("name", "visited", "continent")
+    list_display = ("name", "continent", "currency", "language", "visited")
     search_fields = ["name"]
 
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
-    list_display = ("name", "visited", "country")
+    list_display = ("name", "country", "lat", "lon")
     search_fields = ["name"]
     autocomplete_fields = ["country"]
 
