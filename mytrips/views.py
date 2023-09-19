@@ -7,19 +7,6 @@ from mytrips.utils.choices import trips_stops
 
 
 def main(request):
-    missing_cities = set()
-    for item in trips_stops:
-        # "city": "Rio de Janeiro",
-        # "country": "Brazil",
-        # "arrival": "2009-07-24",
-        # "departure": "2009-07-26",
-        # "trip": "Rio",
-        try:
-            city = City.objects.get(name=item["city"])
-        except ObjectDoesNotExist:
-            missing_cities.add((item["city"], item["country"]))
-    print(missing_cities)
-
     stats = {
         "countries": Country.objects.filter(visited=True).count(),
         "cities": City.objects.filter(visited=True).count(),
