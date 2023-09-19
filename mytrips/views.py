@@ -3,9 +3,31 @@ from django.template import loader
 from .models import Country, City, Trip
 from django.db.models import Sum
 from django.core.exceptions import ObjectDoesNotExist
+from mytrips.utils.choices import trips_stops
+from django.urls import reverse_lazy
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
 
 
 def main(request):
+    missing_cities = set()
+    for item in trips_stops:
+        # "city": "Rio de Janeiro",
+        # "country": "Brazil",
+        # "arrival": "2009-07-24",
+        # "departure": "2009-07-26",
+        # "trip": "Rio",
+        try:
+            city = City.objects.get(name=item["city"])
+        except ObjectDoesNotExist:
+            missing_cities.add((item["city"], item["country"]))
+    print(missing_cities)
+
     stats = {
         "countries": Country.objects.filter(visited=True).count(),
         "cities": City.objects.filter(visited=True).count(),
@@ -22,7 +44,7 @@ def main(request):
 
 
 def countries(request):
-    all_countries = Country.objects.filter(visited=True).values()
+    all_countries = Country.objects.filter(visited=True).order_by("name").values()
     template = loader.get_template("countries.html")
     context = {
         "countries": all_countries,
@@ -41,7 +63,7 @@ def country_details(request, id):
 
 
 def cities(request):
-    mydata = City.objects.values("name", "country__name", "visited")
+    mydata = City.objects.values("name", "country__name", "visited").order_by("name")
     template = loader.get_template("cities.html")
     context = {
         "cities": mydata,
@@ -54,3 +76,22 @@ def trip_details(request, id):
     template = loader.get_template("trip_details.html")
     context = {"trip": trip, "stops": []}
     return HttpResponse(template.render(context, request))
+
+
+class CityCreateView(CreateView):
+    model = City
+    fields = ["name", "country", "lat", "lon"]
+    success_url = reverse_lazy("cities")
+
+
+# class CityUpdateView(UpdateView):
+#     model = City
+#     fields = ["name", "country", "lat", "lon"]
+
+#     def get_success_url(self):
+#         return reverse_lazy("entry-detail", kwargs={"pk": self.entry.id})
+
+
+# class EntryDeleteView(DeleteView):
+#     model = Entry
+#     success_url = reverse_lazy("entry-list")
