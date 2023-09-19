@@ -3,6 +3,7 @@ from django.template import loader
 from .models import Country, City, Trip
 from django.db.models import Sum
 from django.core.exceptions import ObjectDoesNotExist
+from mytrips.utils.choices import trips_stops
 
 
 def main(request):
@@ -22,7 +23,7 @@ def main(request):
 
 
 def countries(request):
-    all_countries = Country.objects.filter(visited=True).values()
+    all_countries = Country.objects.filter(visited=True).order_by("name").values()
     template = loader.get_template("countries.html")
     context = {
         "countries": all_countries,
@@ -41,7 +42,7 @@ def country_details(request, id):
 
 
 def cities(request):
-    mydata = City.objects.values("name", "country__name", "visited")
+    mydata = City.objects.values("name", "country__name", "visited").order_by("name")
     template = loader.get_template("cities.html")
     context = {
         "cities": mydata,
