@@ -4,14 +4,6 @@ from .models import Country, City, Trip
 from django.db.models import Sum
 from django.core.exceptions import ObjectDoesNotExist
 from mytrips.utils.choices import trips_stops
-from django.urls import reverse_lazy
-from django.views.generic import (
-    ListView,
-    DetailView,
-    CreateView,
-    UpdateView,
-    DeleteView,
-)
 
 
 def main(request):
@@ -76,22 +68,3 @@ def trip_details(request, id):
     template = loader.get_template("trip_details.html")
     context = {"trip": trip, "stops": []}
     return HttpResponse(template.render(context, request))
-
-
-class CityCreateView(CreateView):
-    model = City
-    fields = ["name", "country", "lat", "lon"]
-    success_url = reverse_lazy("cities")
-
-
-# class CityUpdateView(UpdateView):
-#     model = City
-#     fields = ["name", "country", "lat", "lon"]
-
-#     def get_success_url(self):
-#         return reverse_lazy("entry-detail", kwargs={"pk": self.entry.id})
-
-
-# class EntryDeleteView(DeleteView):
-#     model = Entry
-#     success_url = reverse_lazy("entry-list")
