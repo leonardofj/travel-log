@@ -52,17 +52,18 @@ class Stop(models.Model):
         "City",
         on_delete=models.CASCADE,
     )
-    trip = models.ForeignKey(
-        "Trip",
-        on_delete=models.CASCADE,
-    )
+    trip = models.ForeignKey("Trip", on_delete=models.CASCADE, null=True, default=None)
 
 
 class Trip(models.Model):
     title = models.CharField(max_length=255)
-    duration = models.PositiveIntegerField(null=True)
     start = models.DateField(null=True)
     end = models.DateField(null=True)
 
     def __str__(self):
         return self.title
+
+    @property
+    def duration(self):
+        duration = self.end - self.start
+        return duration.days + 1

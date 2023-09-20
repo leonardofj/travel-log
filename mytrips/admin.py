@@ -10,18 +10,18 @@ class CountryAdmin(admin.ModelAdmin):
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
-    list_display = ("name", "country", "lat", "lon")
+    list_display = ("name", "country", "lat", "lon", "state")
     search_fields = ["name"]
     autocomplete_fields = ["country"]
 
 
 @admin.register(Stop)
 class StopAdmin(admin.ModelAdmin):
-    list_display = ("city", "trip")
+    list_display = ("city", "arrival", "departure", "trip")
     autocomplete_fields = ["city", "trip"]
 
 
 @admin.register(Trip)
 class TripAdmin(admin.ModelAdmin):
-    list_display = ["title"]
+    list_display = ["title", "start", "end", "duration"]
     search_fields = ["title"]

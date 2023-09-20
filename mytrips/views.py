@@ -1,12 +1,14 @@
 from django.http import HttpResponse
 from django.template import loader
-from .models import Country, City, Trip
+
+from mytrips.utils.geolocations import get_location
+from .models import Country, City, Stop, Trip
 from django.db.models import Sum
 from django.core.exceptions import ObjectDoesNotExist
-from mytrips.utils.choices import trips_stops
 
 
 def main(request):
+    all_trips = Trip.objects.all()
     stats = {
         "countries": Country.objects.filter(visited=True).count(),
         "cities": City.objects.filter(visited=True).count(),
@@ -14,9 +16,8 @@ def main(request):
         "continents": (
             Country.objects.filter(visited=True).values("continent").distinct().count()
         ),
-        "total_duration": Trip.objects.aggregate(Sum("duration"))["duration__sum"],
+        "total_duration": sum([item.duration for item in all_trips]),
     }
-    all_trips = Trip.objects.all().values()
     template = loader.get_template("main.html")
     context = {"stats": stats, "trips": all_trips}
     return HttpResponse(template.render(context, request))

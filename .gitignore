@@ -160,4 +160,5 @@ cython_debug/
 
 mytrips/migrations/
 mytrips/static/admin
+mytrips/data/
 .vscode
