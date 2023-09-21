@@ -14,7 +14,8 @@
         <img class="card-img-top" src="{% static 'images/globe.jpg' %}" alt="Card image">
         <div class="card-body">
             <h5 class="card-title"><a class="stretched-link text-reset text-decoration-none" href="{{ x.id }}">
-                    {{ x.name }}</a></h5>
+                    <img class="border" src="{% static 'flags/4x3/' %}{{x.iso_code}}.svg" width="32"> {{ x.name }}</a>
+            </h5>
             <p class="card-text">{{ x.continent }}</p>
         </div>
     </div>
