@@ -23,8 +23,8 @@
         <tr>
             <td>{{ x.name }}</td>
             <td>{{ x.country__name }}</td>
-            <td>{{ x.visits }}</td>
-            <td>{{ x.last_visit }}</td>
+            <td>{{ x.visits|default:"-" }}</td>
+            <td>{{ x.last_visit.date }}</td>
         </tr>
         {% endfor %}
     </tbody>
