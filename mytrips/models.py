@@ -74,3 +74,12 @@ class Trip(models.Model):
     def duration(self):
         duration = self.end - self.start
         return duration.days + 1
+
+    @property
+    def countries(self):
+        trip_countries = (
+            Stop.objects.filter(trip=self)
+            .order_by("arrival")
+            .values("city__country__iso_code")
+        )
+        return list({x["city__country__iso_code"] for x in trip_countries})

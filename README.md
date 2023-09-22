@@ -1,2 +1,2 @@
 # trips
-Small Django projects to manage my trips
+Small Django project to manage my trips
