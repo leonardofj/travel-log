@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 def main(request):
-    all_trips = Trip.objects.all().order_by("-end")
+    all_trips = Trip.objects.all().order_by("-start")
     stats = {
         "countries": Country.objects.filter(visited=True).count(),
         "cities": City.objects.filter(visited=True).count(),
@@ -24,7 +24,14 @@ def main(request):
 
 
 def countries(request):
-    all_countries = Country.objects.filter(visited=True).order_by("name").values()
+    all_countries = (
+        Country.objects.filter(visited=True)
+        .annotate(
+            visits=Count("city__stop__trip", distinct=True),
+            last_visit=Max("city__stop__trip__end"),
+        )
+        .order_by("-last_visit", "visits")
+    )
     template = loader.get_template("countries.html")
     context = {
         "countries": all_countries,

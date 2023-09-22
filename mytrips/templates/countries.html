@@ -9,14 +9,17 @@
 <h1>Countries</h1>
 <hr />
 <div>
-    {% for x in countries %}
-    <div class="card float-start rounded m-1 shadow" style="width:300px;">
-        <img class="card-img-top" src="{% static 'images/globe.jpg' %}" alt="Card image">
+    {% for country in countries %}
+    <div class="card float-start rounded m-1 shadow">
+        <img class="card-img-top" src="{% static 'images/' %}{{country.iso_code}}.jpg"
+            style="width:300px; height:200px; object-fit: cover;" alt="Card image">
         <div class="card-body">
-            <h5 class="card-title"><a class="stretched-link text-reset text-decoration-none" href="{{ x.id }}">
-                    <img class="border" src="{% static 'flags/4x3/' %}{{x.iso_code}}.svg" width="32"> {{ x.name }}</a>
+            <img class="border float-end" src="{% static 'flags/4x3/' %}{{country.iso_code}}.svg" width="32">
+            <h5 class="card-title"><a class="stretched-link text-reset text-decoration-none" href="{{ country.id }}">
+                    {{ country.name }}</a>
             </h5>
-            <p class="card-text">{{ x.continent }}</p>
+            <span class="card-text">{{ country.continent }}</span>
+            <span class="float-end">{{country.visits}} trip{{ country.visits|pluralize:"s" }}</span>
         </div>
     </div>
     {% endfor %}
