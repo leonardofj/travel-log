@@ -3,12 +3,12 @@ from django.template import loader
 
 from mytrips.utils.geolocations import get_location
 from .models import Country, City, Stop, Trip
-from django.db.models import Sum
+from django.db.models import Sum, Count, Max
 from django.core.exceptions import ObjectDoesNotExist
 
 
 def main(request):
-    all_trips = Trip.objects.all()
+    all_trips = Trip.objects.all().order_by("-end")
     stats = {
         "countries": Country.objects.filter(visited=True).count(),
         "cities": City.objects.filter(visited=True).count(),
@@ -43,7 +43,13 @@ def country_details(request, id):
 
 
 def cities(request):
-    mydata = City.objects.values("name", "country__name", "visited").order_by("name")
+    mydata = (
+        City.objects.annotate(
+            visits=Count("stop__trip", distinct=True), last_visit=Max("stop__departure")
+        )
+        .values("name", "country__name", "visited", "visits", "last_visit")
+        .order_by("name")
+    )
     template = loader.get_template("cities.html")
     context = {
         "cities": mydata,

@@ -6,8 +6,8 @@
 
 
 {% block content %}
-
-<h1>{{ country.name }}</h1>
+{% load static %}
+<h1><img class="border" src="{% static 'flags/4x3/' %}{{country.iso_code}}.svg" height="48"> {{ country.name }}</h1>
 
 <p>Visited: {{ country.visited }}</p>
 <p>Need visa: {{ country.need_visa }}</p>

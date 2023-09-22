@@ -10,10 +10,15 @@ class Country(models.Model):
     lat = models.DecimalField(max_digits=9, decimal_places=6)
     lon = models.DecimalField(max_digits=9, decimal_places=6)
     continent = models.CharField(max_length=25, choices=CONTINENTS, null=True)
-    capital = models.CharField(max_length=255, null=True)
-    currency = models.CharField(max_length=25, choices=CURRENCIES, null=True)
-    language = models.CharField(max_length=25, choices=LANGUAGES, null=True)
+    capital = models.CharField(max_length=255, null=True, default=None)
+    currency = models.CharField(
+        max_length=25, choices=CURRENCIES, null=True, default=None
+    )
+    language = models.CharField(
+        max_length=25, choices=LANGUAGES, null=True, default=None
+    )
     area_code = models.CharField(max_length=10, null=True, default=None)
+    iso_code = models.CharField(max_length=10)
 
     class Meta:
         verbose_name_plural = "Countries"
@@ -52,7 +57,9 @@ class Stop(models.Model):
         "City",
         on_delete=models.CASCADE,
     )
-    trip = models.ForeignKey("Trip", on_delete=models.CASCADE, null=True, default=None)
+    trip = models.ForeignKey(
+        "Trip", on_delete=models.DO_NOTHING, null=True, default=None
+    )
 
 
 class Trip(models.Model):
