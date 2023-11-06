@@ -1,5 +1,6 @@
 {% extends "master.html" %}
 {% block content %}
+{% load static %}
 <h1>My Trips</h1>
 <hr />
 <div class="float-start">
@@ -44,8 +45,14 @@
                 <h5 class="card-title"><a class="stretched-link text-reset text-decoration-none"
                         href="trips/{{ x.id }}">
                         {{ x.title }}</a></h5>
-                <p class="card-text">{{ x.duration }} days</p>
-                <p class="card-text">{{ x.end|timesince}} ago</p>
+                <div>
+                    <p class="card-text">{{ x.duration }} days</p>
+                    <p class="card-text">{{ x.end|timesince}} ago</p>
+                </div>
+                <div class="float-end">{% for c in x.countries %}
+                    <img class="border rounded-circle float-end" src="{% static 'flags/1x1/' %}{{c}}.svg" width="24">
+                    {% endfor %}
+                </div>
             </div>
         </div>
         {% endfor %}
