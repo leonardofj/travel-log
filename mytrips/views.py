@@ -66,6 +66,11 @@ def cities(request):
 
 def trip_details(request, id):
     trip = Trip.objects.get(id=id)
+    stops = (
+        Stop.objects.filter(trip=trip)
+        .order_by("arrival")
+        .values("city__country__name", "city__name", "arrival", "departure")
+    )
     template = loader.get_template("trip_details.html")
-    context = {"trip": trip, "stops": []}
+    context = {"trip": trip, "stops": stops}
     return HttpResponse(template.render(context, request))
