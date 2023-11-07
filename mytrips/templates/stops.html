@@ -1,0 +1,40 @@
+{% extends "master.html" %}
+
+{% block title %}
+- Stops
+{% endblock %}
+
+{% block content %}
+
+<h1>Stops</h1>
+<hr />
+<table id="stopsTable" class="table table-hover">
+    <thead>
+        <tr>
+            <th>Location</th>
+            <th>Arrival</th>
+            <th>Departure</th>
+            <th>Trip</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stop in stops %}
+        <tr>
+            <td>{{ stop.city__name }}, {{ stop.city__country__name }}</td>
+            <td>{{ stop.arrival|date:'Y-m-d' }}</td>
+            <td>{{ stop.departure|date:'Y-m-d' }}</td>
+            <td>{{ stop.trip__title|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#stopsTable').DataTable({
+            "order": [],
+            "pageLength": 50,
+        });
+    });
+</script>
+{% endblock %}
