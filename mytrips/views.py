@@ -1,10 +1,6 @@
-from django.http import HttpResponse
-from django.template import loader
-
-from mytrips.utils.geolocations import get_location
+from django.shortcuts import render, get_object_or_404
 from .models import Country, City, Stop, Trip
-from django.db.models import Sum, Count, Max
-from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Count, Max
 
 
 def main(request):
@@ -18,9 +14,8 @@ def main(request):
         ),
         "total_duration": sum([item.duration for item in all_trips]),
     }
-    template = loader.get_template("main.html")
     context = {"stats": stats, "trips": all_trips}
-    return HttpResponse(template.render(context, request))
+    return render(request, "main.html", context)
 
 
 def countries(request):
@@ -32,21 +27,18 @@ def countries(request):
         )
         .order_by("-last_visit", "visits")
     )
-    template = loader.get_template("countries.html")
     context = {
         "countries": all_countries,
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, "countries.html", context)
 
 
 def country_details(request, id):
-    # TODO: country doesn't exist
-    country = Country.objects.get(id=id)
-    template = loader.get_template("country_details.html")
+    country = get_object_or_404(Country, id=id)
     context = {
         "country": country,
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, "country_details.html", context)
 
 
 def cities(request):
@@ -57,31 +49,28 @@ def cities(request):
         .values("name", "country__name", "visited", "visits", "last_visit")
         .order_by("name")
     )
-    template = loader.get_template("cities.html")
     context = {
         "cities": mydata,
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, "cities.html", context)
 
 
 def stops(request):
     stops = Stop.objects.values(
         "city__country__name", "city__name", "arrival", "departure", "trip__title"
     ).order_by("-departure")
-    template = loader.get_template("stops.html")
     context = {
         "stops": stops,
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, "stops.html", context)
 
 
 def trip_details(request, id):
-    trip = Trip.objects.get(id=id)
+    trip = get_object_or_404(Trip, id=id)
     stops = (
         Stop.objects.filter(trip=trip)
         .order_by("arrival")
         .values("city__country__name", "city__name", "arrival", "departure")
     )
-    template = loader.get_template("trip_details.html")
     context = {"trip": trip, "stops": stops}
-    return HttpResponse(template.render(context, request))
+    return render(request, "trip_details.html", context)
