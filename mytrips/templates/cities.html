@@ -31,15 +31,15 @@
                     <fieldset>
                         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
                         <div class="form-floating mb-2">
-                            <input type="text" class="form-control" name="name" id="name" required>
-                            <label for="name">Name</label>
+                            <input type="text" class="form-control" name="city_name" id="city_name" required>
+                            <label for="city_name">City name</label>
                         </div>
                         <div class="form-floating mb-2">
                             <select class="form-select" id="country" name="country" required>
-                                <option selected>Select</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                                <option value="">---------</option>
+                                {% for country in countries %}
+                                <option value="{{ country.pk }}">{{ country.name }}</option>
+                                {% endfor %}
                             </select>
                             <label for="country">Country</label>
                         </div>
@@ -82,6 +82,7 @@
 <script>
     $(document).ready(function () {
         $("#citiesTable").DataTable({
+            order: [],
             pageLength: 25,
         });
     });
