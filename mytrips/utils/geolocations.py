@@ -18,9 +18,9 @@ def get_location(city, country, state=""):
         timeout=30,
     )
     if location and location.raw:
-        return (
-            float(location.raw["lat"]),
-            float(location.raw["lon"]),
-            location.raw["name"],
-            location.raw["address"]["country"],
-        )
+        return {
+            "lat": float(location.raw["lat"]),
+            "lon": float(location.raw["lon"]),
+            "city": location.raw["name"],
+            "country": location.raw["address"]["country"],
+        }

@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-3&jov8cbu0n8y1=d0@wd^50%p2c*6%o2b@6m0pz*fej-h^h%@+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -107,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "CET"
 
 USE_I18N = True
 
@@ -124,3 +124,7 @@ STATIC_ROOT = "/home/leo/Projects/trips/trips/mytrips/static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+MESSAGE_TAGS = {
+    40: "danger",
+}
