@@ -29,7 +29,6 @@
                 {% csrf_token %}
                 <div class="modal-body">
                     <fieldset>
-                        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
                         <div class="form-floating mb-2">
                             <input type="text" class="form-control" name="city_name" id="city_name" required>
                             <label for="city_name">City name</label>

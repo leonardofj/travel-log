@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from mytrips.utils.geolocations import get_location
@@ -5,6 +6,8 @@ from .models import Country, City, Stop, Trip
 from django.db.models import Count, Max
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+
+HOME = 5  # city_id of home
 
 
 def main(request):
@@ -59,12 +62,15 @@ def cities(request):
 
 
 def stops(request):
+    cities = (
+        City.objects.filter(visited=True)
+        .values("pk", "name", "country__name")
+        .order_by("name")
+    )
     stops = Stop.objects.values(
         "city__country__name", "city__name", "arrival", "departure", "trip__title"
     ).order_by("-departure")
-    context = {
-        "stops": stops,
-    }
+    context = {"stops": stops, "cities": cities}
     return render(request, "stops.html", context)
 
 
@@ -105,9 +111,40 @@ def add_city(request):
 
 
 def add_stops(request):
-    city = request.POST["city"]
-    arrival = request.POST["arrival"]
-    departure = request.POST["departure"]
-    trip = request.POST["trip"]
+    cities = request.POST.getlist("city")
+    arrivals = request.POST.getlist("arrival")
+    departures = request.POST.getlist("departure")
+    trip = None
+    last_stop = Stop.objects.order_by("-departure").first().departure.date()
+    if request.POST["trip"]:
+        trip_data = {
+            "title": request.POST["trip"],
+            "start": datetime.strptime(min(arrivals), "%Y-%m-%dT%H:%M").date(),
+            "end": datetime.strptime(max(departures), "%Y-%m-%dT%H:%M").date(),
+        }
+        trip = Trip(**trip_data)
+        trip.save()
+
+    # adding time at home between trips
+    if last_stop < trip.start:
+        home_time = Stop(
+            city=get_object_or_404(City, pk=HOME),
+            arrival=datetime.fromisoformat(last_stop.isoformat() + " 14:00"),
+            departure=datetime.fromisoformat(trip.start.isoformat() + " 14:00"),
+        )
+        home_time.save()
+
+    for index, city_id in enumerate(cities):
+        arrival = arrivals[index]
+        departure = departures[index]
+        stop_data = {
+            "city": get_object_or_404(City, pk=city_id),
+            "arrival": datetime.strptime(arrival, "%Y-%m-%dT%H:%M"),
+            "departure": datetime.strptime(departure, "%Y-%m-%dT%H:%M"),
+        }
+        if trip:
+            stop_data["trip"] = trip
+        stop = Stop(**stop_data)
+        stop.save()
 
     return HttpResponseRedirect(reverse("stops"))
