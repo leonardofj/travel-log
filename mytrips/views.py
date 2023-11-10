@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Country, City, Stop, Trip
 from django.db.models import Count, Max
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 
 def main(request):
@@ -42,16 +44,15 @@ def country_details(request, id):
 
 
 def cities(request):
-    mydata = (
+    countries = Country.objects.filter(visited=True)
+    cities_list = (
         City.objects.annotate(
             visits=Count("stop__trip", distinct=True), last_visit=Max("stop__departure")
         )
         .values("name", "country__name", "visited", "visits", "last_visit")
         .order_by("name")
     )
-    context = {
-        "cities": mydata,
-    }
+    context = {"cities": cities_list, "countries": countries}
     return render(request, "cities.html", context)
 
 
@@ -74,3 +75,20 @@ def trip_details(request, id):
     )
     context = {"trip": trip, "stops": stops}
     return render(request, "trip_details.html", context)
+
+
+def add_city(request):
+    name = request.POST["name"]
+    country = request.POST["country"]
+    state = request.POST["state"]
+
+    return HttpResponseRedirect(reverse("cities"))
+
+
+def add_stops(request):
+    city = request.POST["city"]
+    arrival = request.POST["arrival"]
+    departure = request.POST["departure"]
+    trip = request.POST["trip"]
+
+    return HttpResponseRedirect(reverse("stops"))
