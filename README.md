@@ -1,2 +1,7 @@
 # trips
-Small Django project to manage my trips
+
+Small project to manage my trips
+
+## Run django backend
+
+`python manage.py runserver`
