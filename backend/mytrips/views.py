@@ -126,11 +126,11 @@ def add_stops(request):
         trip.save()
 
     # adding time at home between trips
-    if last_stop < trip.start:
+    if last_stop < datetime.strptime(min(arrivals), "%Y-%m-%dT%H:%M").date():
         home_time = Stop(
             city=get_object_or_404(City, pk=HOME),
             arrival=datetime.fromisoformat(last_stop.isoformat() + " 14:00"),
-            departure=datetime.fromisoformat(trip.start.isoformat() + " 14:00"),
+            departure=datetime.strptime(min(arrivals), "%Y-%m-%dT%H:%M"),
         )
         home_time.save()
 
