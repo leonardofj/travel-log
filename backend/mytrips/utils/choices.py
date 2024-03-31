@@ -162,6 +162,7 @@ CURRENCIES = [
 ]
 
 LANGUAGES = [
+    ("af", "Afrikaans"),
     ("sq", "Albanian"),
     ("ar", "Arabic"),
     ("az", "Azerbaijani"),
@@ -198,6 +199,7 @@ LANGUAGES = [
     ("sl", "Slovene"),
     ("es", "Spanish"),
     ("sv", "Swedish"),
+    ("sw", "Swahili"),
     ("tr", "Turkish"),
     ("uk", "Ukrainian"),
 ]
