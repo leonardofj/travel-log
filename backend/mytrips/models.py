@@ -83,3 +83,37 @@ class Trip(models.Model):
             .values("city__country__iso_code")
         )
         return list({x["city__country__iso_code"] for x in trip_countries})
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Plan(models.Model):
+    title = models.CharField(max_length=255)
+    start = models.DateField(null=True)
+    end = models.DateField(null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+    cities = models.ManyToManyField(City, blank=True)
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def duration(self):
+        duration = self.end - self.start
+        return duration.days + 1
+
+
+class PackingItem(models.Model):
+    name = models.CharField(max_length=50)
+    quantity_modifier = models.IntegerField(default=1)
+    single = models.BooleanField(default=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+    all_trips = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name

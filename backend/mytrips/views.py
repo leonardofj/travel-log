@@ -2,7 +2,7 @@ from datetime import datetime
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from mytrips.utils.geolocations import get_location
-from .models import Country, City, Stop, Trip
+from .models import Country, City, Stop, Trip, Plan, Tag, PackingItem
 from django.db.models import Count, Max
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -148,3 +148,43 @@ def add_stops(request):
         stop.save()
 
     return HttpResponseRedirect(reverse("stops"))
+
+
+def plans(request):
+    cities = (
+        City.objects.filter(visited=True)
+        .values("pk", "name", "country__name")
+        .order_by("name")
+    )
+    plans = Plan.objects.order_by("title")
+    tags = Tag.objects.order_by("name")
+    context = {"plans": plans, "cities": cities, "tags": tags}
+    return render(request, "plans.html", context)
+
+
+def add_plan(request):
+    title = request.POST.getlist("title")
+    cities = request.POST.getlist("city")
+    start = request.POST.getlist("start")
+    end = request.POST.getlist("end")
+    tags = request.POST.getlist("tags")
+
+    trip = None
+    last_stop = Stop.objects.order_by("-departure").first().departure.date()
+    if request.POST["trip"]:
+        trip_data = {
+            "title": request.POST["trip"],
+            "start": datetime.strptime(min(arrivals), "%Y-%m-%dT%H:%M").date(),
+            "end": datetime.strptime(max(departures), "%Y-%m-%dT%H:%M").date(),
+        }
+        trip = Trip(**trip_data)
+        trip.save()
+
+    return HttpResponseRedirect(reverse("plans"))
+
+
+def plan_details(request, id):
+    plan = get_object_or_404(Plan, id=id)
+    packing_items = PackingItem.objects.order_by("name")
+    context = {"plan": plan, "packing_items": packing_items}
+    return render(request, "plan_details.html", context)

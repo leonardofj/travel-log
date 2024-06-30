@@ -1,0 +1,111 @@
+{% extends "master.html" %}
+
+{% block title %}
+- Plans
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex">
+    <h1 class="me-3">Plans</h1>
+    <div class="mt-2">
+        <button type="button" class="btn btn-primary btn-sm pb-0" data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop">
+            <i class="fa fa-plus fa-2x"></i>
+        </button>
+    </div>
+</div>
+<hr />
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Add plan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'add_stops'  %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <table class="table table-borderless table-hover mb-3">
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    City
+                                </th>
+                                <th class="text-center">
+                                    Arival
+                                </th>
+                                <th class="text-center">
+                                    Departure
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id='form-row'>
+                                <td>
+                                    <select class="form-select" name="city" required>
+                                        <option value="">---------</option>
+                                        {% for city in cities %}
+                                        <option value="{{ city.pk }}">{{ city.name }}, {{ city.country__name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="datetime-local" class="form-control" name="arrival" required>
+                                </td>
+                                <td>
+                                    <input type="datetime-local" class="form-control" name="departure" required>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button id="addNewEntry" class="btn btn-secondary">Add row</button>
+                    <div class="row mt-4">
+                        <div class="col-sm-6">
+                            <fieldset>
+                                <label>Trip</label>
+                                <input type="text" class="form-control" name="trip">
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="float-start ms-2">
+    <div>
+        {% for plan in plans %}
+        <div class="card float-start rounded m-1 shadow" style="width:300px;">
+            <div class="card-body">
+                <h5 class="card-title"><a class="stretched-link text-reset text-decoration-none"
+                        href="{{ plan.id }}">
+                        {{ plan.title }}</a></h5>
+                <div>
+                    <p class="card-text">{{ plan.start }} - {{ plan.end}}</p>
+                </div>                
+                <div >
+                    <p class="card-text">{{ plan.cities.all|join:", " }}</p>
+                </div>
+                <div >
+                    {% for tag in plan.tags.all %}
+                    <span class="badge bg-secondary">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% endblock %}
