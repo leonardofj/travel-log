@@ -1,0 +1,24 @@
+{% extends "master.html" %}
+
+{% block title %}
+- {{ plan.title }}
+{% endblock %}
+
+
+{% block content %}
+
+<h1>{{ plan.title }}</h1>
+<hr />
+
+<p>Start: {{ plan.start }}</p>
+<p>End: {{ plan.end }}</p>
+
+<br>
+<ul>
+    {% for x in packing_items %}
+    <li>{{ x.name }}</li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

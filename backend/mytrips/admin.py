@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Country, City, Stop, Trip
+from .models import Country, City, Stop, Trip, Plan, Tag, PackingItem
 
 
 @admin.register(Country)
@@ -25,3 +25,23 @@ class StopAdmin(admin.ModelAdmin):
 class TripAdmin(admin.ModelAdmin):
     list_display = ["title", "start", "end", "duration"]
     search_fields = ["title"]
+
+
+@admin.register(Plan)
+class PlanAdmin(admin.ModelAdmin):
+    list_display = ["title", "start", "end", "duration"]
+    search_fields = ["title", "tags", "cities"]
+    autocomplete_fields = ["tags", "cities"]
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+    search_fields = ["name"]
+
+
+@admin.register(PackingItem)
+class PackingItemAdmin(admin.ModelAdmin):
+    list_display = ["name", "quantity_modifier", "single", "all_trips"]
+    search_fields = ["name"]
+    autocomplete_fields = ["tags"]

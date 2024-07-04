@@ -10,4 +10,7 @@ urlpatterns = [
     path("trips/<int:id>", views.trip_details, name="trip_details"),
     path("cities/add/", views.add_city, name="add_city"),
     path("stops/add/", views.add_stops, name="add_stops"),
+    path("plans/", views.plans, name="plans"),
+    path("plans/add/", views.add_plan, name="add_plan"),
+    path("plans/<int:id>", views.plan_details, name="plan_details"),
 ]
