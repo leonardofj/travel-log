@@ -25,52 +25,43 @@
                 <h5 class="modal-title" id="staticBackdropLabel">Add plan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{% url 'add_stops'  %}" method="post">
+            <form action="{% url 'add_plan'  %}" method="post">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <table class="table table-borderless table-hover mb-3">
-                        <thead>
-                            <tr>
-                                <th class="text-center">
-                                    City
-                                </th>
-                                <th class="text-center">
-                                    Arival
-                                </th>
-                                <th class="text-center">
-                                    Departure
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr id='form-row'>
-                                <td>
-                                    <select class="form-select" name="city" required>
-                                        <option value="">---------</option>
+                    <fieldset>
+                        <div class="form-floating mb-2">
+                            <input type="text" class="form-control" name="title" id="title" required>
+                            <label for="title">Title</label>
+                        </div>
+                        <div class="form-floating mb-2">
+                            <div>
+                                <input type="date" class="form-control" name="start" id="start" required>
+                                <label for="start">Start</label>
+                            <div>                                
+                            </div>
+                                <input type="date" class="form-control" name="end" id="end" required>
+                                <label for="end">End</label>
+                            </div>
+                        </div>
+                        <div class="form-floating mb-2">
+                            <label for="cities">Cities</label>
+                            <select class="form-select" style="height:auto;" id="cities" name="cities" required multiple>
                                         {% for city in cities %}
                                         <option value="{{ city.pk }}">{{ city.name }}, {{ city.country__name }}
                                         </option>
                                         {% endfor %}
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="datetime-local" class="form-control" name="arrival" required>
-                                </td>
-                                <td>
-                                    <input type="datetime-local" class="form-control" name="departure" required>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button id="addNewEntry" class="btn btn-secondary">Add row</button>
-                    <div class="row mt-4">
-                        <div class="col-sm-6">
-                            <fieldset>
-                                <label>Trip</label>
-                                <input type="text" class="form-control" name="trip">
-                            </fieldset>
+                                    </select>                                                      
                         </div>
-                    </div>
+                        <div class="form-floating mb-2">
+                            <label for="tags">Tags</label>
+                            <select class="form-select" style="height:auto;" id="tags" name="tags" multiple>
+                                        {% for tag in tags %}
+                                        <option value="{{ tag.pk }}">{{ tag.name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>                                                      
+                        </div>
+                    </fieldset>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

@@ -152,9 +152,9 @@ def add_stops(request):
 
 def plans(request):
     cities = (
-        City.objects.filter(visited=True)
+        City.objects.filter()
         .values("pk", "name", "country__name")
-        .order_by("name")
+        .order_by("country__name", "name")
     )
     plans = Plan.objects.order_by("title")
     tags = Tag.objects.order_by("name")
@@ -163,22 +163,24 @@ def plans(request):
 
 
 def add_plan(request):
-    title = request.POST.getlist("title")
-    cities = request.POST.getlist("city")
-    start = request.POST.getlist("start")
-    end = request.POST.getlist("end")
+    title = request.POST.get("title")
+    cities = request.POST.getlist("cities")
+    start = request.POST.get("start")
+    end = request.POST.get("end")
     tags = request.POST.getlist("tags")
 
-    trip = None
-    last_stop = Stop.objects.order_by("-departure").first().departure.date()
-    if request.POST["trip"]:
-        trip_data = {
-            "title": request.POST["trip"],
-            "start": datetime.strptime(min(arrivals), "%Y-%m-%dT%H:%M").date(),
-            "end": datetime.strptime(max(departures), "%Y-%m-%dT%H:%M").date(),
-        }
-        trip = Trip(**trip_data)
-        trip.save()
+    plan_data = {
+        "title": title,
+        "start": datetime.strptime(start, "%Y-%m-%d").date(),
+        "end": datetime.strptime(end, "%Y-%m-%d").date(),
+    }
+    plan = Plan(**plan_data)
+    plan.save()
+
+    for city_id in cities:
+        plan.cities.add(get_object_or_404(City, pk=city_id))
+    for tag_id in tags:
+        plan.tags.add(get_object_or_404(Tag, pk=tag_id))
 
     return HttpResponseRedirect(reverse("plans"))
 
