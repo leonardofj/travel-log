@@ -1,76 +1,89 @@
-import React, { useState } from "react";
 import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  useTheme,
-  useMediaQuery,
   Box,
+  Flex,
+  HStack,
+  IconButton,
   Button,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+  useDisclosure,
+  Stack,
+} from "@chakra-ui/react";
+import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import { Link } from "react-router-dom";
 
-const ResponsiveNavbar: React.FC = () => {
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+interface Props {
+  children: React.ReactNode;
+}
 
-  const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
-      ) {
-        return;
-      }
-      setDrawerOpen(open);
-    };
+const Links = ["Countries", "Cities", "Stops", "Planning"];
 
-  const menuItems = ["Home", "Countries", "Cities", "Stops"].map((text) => (
-    <ListItem button key={text}>
-      <ListItemText primary={text} />
-    </ListItem>
-  ));
+const NavLink = (props: Props) => {
+  const { children } = props;
+  return (
+    <Box
+      px={2}
+      py={1}
+      rounded={"md"}
+      _hover={{
+        textDecoration: "none",
+        bg: "#FFBA08",
+        color: "#660000",
+      }}
+    >
+      <Link to={children} style={{ color: "#E0E0E0", fontWeight: "bold" }}>
+        {children}
+      </Link>
+    </Box>
+  );
+};
+
+const ResponsiveNavbar = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <AppBar position="static" sx={{ mb: 4 }}>
-      <Toolbar>
-        {" "}
-        {isMobile && (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={() => setDrawerOpen(true)}
+    <Box bg={"#1D3344"} px={4}>
+      <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+        <IconButton
+          size={"md"}
+          icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+          aria-label={"Open Menu"}
+          display={{ md: "none" }}
+          onClick={isOpen ? onClose : onOpen}
+        />
+        <HStack spacing={8} alignItems={"center"}>
+          <Link to="/" style={{ color: "#E0E0E0", fontWeight: "bold" }}>
+            Travel Log
+          </Link>
+          <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
+            {Links.map((link) => (
+              <NavLink key={link}>{link}</NavLink>
+            ))}
+          </HStack>
+        </HStack>
+        <Flex alignItems={"center"}>
+          <Button
+            variant={"solid"}
+            bg={"#FFBA08"}
+            size={"sm"}
+            color={"#660000"}
+            mr={4}
+            leftIcon={<AddIcon />}
+            _hover={{ bg: "#660000", color: "#FFBA08" }}
           >
-            <FontAwesomeIcon icon={faBars} />
-          </IconButton>
-        )}
-        <Typography
-          variant="h6"
-          sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-        >
-          Travel Log
-        </Typography>
-        <Box sx={{ display: { xs: "none", sm: "flex" }, gap: 2 }}>
-          <Button color="inherit">Home</Button>
-          <Button color="inherit">Countries</Button>
-          <Button color="inherit">Cities</Button>
-          <Button color="inherit">Stops</Button>
+            New trip
+          </Button>
+        </Flex>
+      </Flex>
+
+      {isOpen ? (
+        <Box pb={4} display={{ md: "none" }}>
+          <Stack as={"nav"} spacing={4}>
+            {Links.map((link) => (
+              <NavLink key={link}>{link}</NavLink>
+            ))}
+          </Stack>
         </Box>
-      </Toolbar>
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <List>{menuItems}</List>
-      </Drawer>
-    </AppBar>
+      ) : null}
+    </Box>
   );
 };
 
