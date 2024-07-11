@@ -1,8 +1,9 @@
-import { Box, Flex, Heading, HStack, SimpleGrid } from "@chakra-ui/react";
+import { Box, Flex, HStack, SimpleGrid } from "@chakra-ui/react";
 import StatsBox from "../components/Stats";
 import PlanCard from "../components/PlanCard";
 import TripCard from "../components/TripCard";
 import { plans, trips, stats } from "../data";
+import HeaderWithButton from "../components/HeaderWithButton";
 
 const Home = () => {
   return (
@@ -17,7 +18,7 @@ const Home = () => {
             total_duration={stats.total_duration}
           ></StatsBox>
           <Box mx={4} my={2}>
-            <Heading size={"lg"}>Plans</Heading>
+            <HeaderWithButton title={"Plans"} size={"lg"}></HeaderWithButton>
             <HStack spacing={4} py={3}>
               {plans.map((plan) => (
                 <PlanCard
@@ -31,9 +32,8 @@ const Home = () => {
             </HStack>
           </Box>
         </Flex>
-        <Heading size={"lg"} mx={2}>
-          Trips
-        </Heading>
+
+        <HeaderWithButton title={"Trips"} size={"lg"}></HeaderWithButton>
         <SimpleGrid spacing={2} minChildWidth="300px">
           {trips.map((trip) => (
             <TripCard

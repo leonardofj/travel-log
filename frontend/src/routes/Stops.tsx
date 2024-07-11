@@ -1,11 +1,9 @@
-import { Box, Heading } from "@chakra-ui/react";
+import HeaderWithButton from "../components/HeaderWithButton";
 
 const Stops = () => {
   return (
     <div>
-      <Box p={4}>
-        <Heading as={"h2"}>Stops</Heading>
-      </Box>
+      <HeaderWithButton title={"Stops"}></HeaderWithButton>
     </div>
   );
 };

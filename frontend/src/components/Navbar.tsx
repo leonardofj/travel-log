@@ -3,18 +3,17 @@ import {
   Flex,
   HStack,
   IconButton,
-  Button,
   useDisclosure,
   Stack,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 
 interface Props {
   children: React.ReactNode;
 }
 
-const Links = ["Countries", "Cities", "Stops", "Planning"];
+const Links = ["Countries", "Cities", "Stops"];
 
 const NavLink = (props: Props) => {
   const { children } = props;
@@ -59,19 +58,6 @@ const ResponsiveNavbar = () => {
             ))}
           </HStack>
         </HStack>
-        <Flex alignItems={"center"}>
-          <Button
-            variant={"solid"}
-            bg={"#FFBA08"}
-            size={"sm"}
-            color={"#660000"}
-            mr={4}
-            leftIcon={<AddIcon />}
-            _hover={{ bg: "#660000", color: "#FFBA08" }}
-          >
-            New trip
-          </Button>
-        </Flex>
       </Flex>
 
       {isOpen ? (
