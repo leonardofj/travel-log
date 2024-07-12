@@ -745,5 +745,60 @@ export const countries = [
 		"language" : "it"
 	}
 ]
-export const cities = {countries: 11}
+export const cities = [
+	{
+		"id" : 88,
+		"name" : "São Luís",
+		"visited" : 1,
+		"country_id" : 25,
+		"lat" : -2.5391,
+		"lon" : -44.2829,
+		"state" : "Maranhão"
+	},
+	{
+		"id" : 169,
+		"name" : "Barreirinhas",
+		"visited" : 1,
+		"country_id" : 25,
+		"lat" : -2.754127,
+		"lon" : -42.825969,
+		"state" : "Maranhão"
+	},
+	{
+		"id" : 1,
+		"name" : "Orlando",
+		"visited" : 1,
+		"country_id" : 184,
+		"lat" : 28.538336,
+		"lon" : -81.379234,
+		"state" : "Florida"
+	},
+	{
+		"id" : 111,
+		"name" : "Los Angeles",
+		"visited" : 1,
+		"country_id" : 184,
+		"lat" : 34.052235,
+		"lon" : -118.243683,
+		"state" : "California"
+	},
+	{
+		"id" : 69,
+		"name" : "Macapá",
+		"visited" : 1,
+		"country_id" : 25,
+		"lat" : 0.0356,
+		"lon" : -51.0705,
+		"state" : "Amapá"
+	},
+	{
+		"id" : 70,
+		"name" : "Maceió",
+		"visited" : 1,
+		"country_id" : 25,
+		"lat" : -9.6498,
+		"lon" : -35.7089,
+		"state" : "Alagoas"
+	}
+]
 export const stops = {countries: 11}
