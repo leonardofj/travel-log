@@ -1,113 +1,17 @@
 from datetime import datetime
-from django.shortcuts import render, get_object_or_404
+
 from django.contrib import messages
-from mytrips.utils.geolocations import get_location
-from .models import Country, City, Stop, Trip, Plan, Tag, PackingItem
 from django.db.models import Count, Max
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from mytrips.serializers import *
+from mytrips.utils.geolocations import get_location
+from rest_framework import status, viewsets
+from rest_framework.response import Response
+from .models import City, Country, PackingItem, Plan, Stop, Tag, Trip
 
 HOME = 5  # city_id of home
-
-
-def main(request):
-    all_trips = Trip.objects.all().order_by("-start")
-    stats = {
-        "countries": Country.objects.filter(visited=True).count(),
-        "cities": City.objects.filter(visited=True).count(),
-        "trips": Trip.objects.count(),
-        "continents": (
-            Country.objects.filter(visited=True).values("continent").distinct().count()
-        ),
-        "total_duration": sum([item.duration for item in all_trips]),
-    }
-    context = {"stats": stats, "trips": all_trips}
-    return render(request, "main.html", context)
-
-
-def countries(request):
-    all_countries = (
-        Country.objects.filter(visited=True)
-        .annotate(
-            visits=Count("city__stop__trip", distinct=True),
-            last_visit=Max("city__stop__trip__end"),
-        )
-        .order_by("-last_visit", "visits")
-    )
-    context = {
-        "countries": all_countries,
-    }
-    return render(request, "countries.html", context)
-
-
-def country_details(request, id):
-    country = get_object_or_404(Country, id=id)
-    context = {
-        "country": country,
-    }
-    return render(request, "country_details.html", context)
-
-
-def cities(request):
-    countries = Country.objects.filter(visited=True).order_by("name")
-    cities_list = (
-        City.objects.annotate(
-            visits=Count("stop__trip", distinct=True), last_visit=Max("stop__departure")
-        )
-        .values("name", "country__name", "visited", "visits", "last_visit")
-        .order_by("-id")
-    )
-    context = {"cities": cities_list, "countries": countries}
-    return render(request, "cities.html", context)
-
-
-def stops(request):
-    cities = (
-        City.objects.filter(visited=True)
-        .values("pk", "name", "country__name")
-        .order_by("name")
-    )
-    stops = Stop.objects.values(
-        "city__country__name", "city__name", "arrival", "departure", "trip__title"
-    ).order_by("-departure")
-    context = {"stops": stops, "cities": cities}
-    return render(request, "stops.html", context)
-
-
-def trip_details(request, id):
-    trip = get_object_or_404(Trip, id=id)
-    stops = (
-        Stop.objects.filter(trip=trip)
-        .order_by("arrival")
-        .values("city__country__name", "city__name", "arrival", "departure")
-    )
-    context = {"trip": trip, "stops": stops}
-    return render(request, "trip_details.html", context)
-
-
-def add_city(request):
-    city_name = request.POST["city_name"]
-    state = request.POST["state"]
-    country = get_object_or_404(Country, pk=request.POST.get("country"))
-    city_data = {
-        "name": city_name,
-        "visited": True,
-        "country": country,
-        "state": state,
-    }
-    location = get_location(city_name, country.name, state)
-    if location:
-        city_data["lat"] = location["lat"]
-        city_data["lon"] = location["lon"]
-        new_city = City(**city_data)
-        new_city.save()
-        messages.success(request, f"New city saved: {city_name}, {country.name}")
-    else:
-        messages.error(
-            request, f"Coordinates not found for city {city_name} in {country.name}"
-        )
-
-    return HttpResponseRedirect(reverse("cities"))
 
 
 def add_stops(request):
@@ -150,43 +54,170 @@ def add_stops(request):
     return HttpResponseRedirect(reverse("stops"))
 
 
-def plans(request):
-    cities = (
-        City.objects.filter()
-        .values("pk", "name", "country__name")
-        .order_by("country__name", "name")
-    )
-    plans = Plan.objects.order_by("title")
-    tags = Tag.objects.order_by("name")
-    context = {"plans": plans, "cities": cities, "tags": tags}
-    return render(request, "plans.html", context)
+class StatsViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for listing or retrieving users.
+    """
+
+    def list(self, request):
+        all_trips = Trip.objects.all()
+        travel_stats = {
+            "countries": Country.objects.filter(visited=True).count(),
+            "cities": City.objects.filter(visited=True).count(),
+            "trips": Trip.objects.count(),
+            "continents": (
+                Country.objects.filter(visited=True)
+                .values("continent")
+                .distinct()
+                .count()
+            ),
+            "total_duration": sum([item.duration for item in all_trips]),
+        }
+        serializer = StatsSerializer(travel_stats)
+        return Response(serializer.data)
 
 
-def add_plan(request):
-    title = request.POST.get("title")
-    cities = request.POST.getlist("cities")
-    start = request.POST.get("start")
-    end = request.POST.get("end")
-    tags = request.POST.getlist("tags")
+class CountryViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for listing or retrieving users.
+    """
 
-    plan_data = {
-        "title": title,
-        "start": datetime.strptime(start, "%Y-%m-%d").date(),
-        "end": datetime.strptime(end, "%Y-%m-%d").date(),
-    }
-    plan = Plan(**plan_data)
-    plan.save()
+    def list(self, request):
+        all_countries = (
+            Country.objects.filter(visited=True)
+            .annotate(
+                visits=Count("city__stop__trip", distinct=True),
+                last_visit=Max("city__stop__trip__end"),
+            )
+            .order_by("-last_visit", "visits")
+        )
+        serializer = CountriesSerializer(all_countries, many=True)
+        return Response(serializer.data)
 
-    for city_id in cities:
-        plan.cities.add(get_object_or_404(City, pk=city_id))
-    for tag_id in tags:
-        plan.tags.add(get_object_or_404(Tag, pk=tag_id))
-
-    return HttpResponseRedirect(reverse("plans"))
+    def retrieve(self, request, pk=None):
+        country = get_object_or_404(Country, id=pk)
+        serializer = CountrySerializer(country)
+        return Response(serializer.data)
 
 
-def plan_details(request, id):
-    plan = get_object_or_404(Plan, id=id)
-    packing_items = PackingItem.objects.order_by("name")
-    context = {"plan": plan, "packing_items": packing_items}
-    return render(request, "plan_details.html", context)
+class TripViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for listing or retrieving users.
+    """
+
+    serializer_class = TripSerializer
+
+    def list(self, request):
+        all_trips = Trip.objects.all()
+        serializer = TripsSerializer(all_trips, many=True)
+
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        trip = get_object_or_404(Trip, id=pk)
+        serializer = TripSerializer(trip)
+        return Response(serializer.data)
+
+
+class CityViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for listing or retrieving users.
+    """
+
+    serializer_class = CitySerializer
+
+    def list(self, request):
+        cities = (
+            City.objects.annotate(
+                visits=Count("stop__trip", distinct=True),
+                last_visit=Max("stop__departure"),
+            )
+            .values("id", "name", "country__name", "visited", "visits", "last_visit")
+            .order_by("-id")
+        )
+        serializer = CitiesSerializer(cities, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        city = get_object_or_404(
+            City.objects.annotate(
+                visits=Count("stop__trip", distinct=True),
+                last_visit=Max("stop__departure"),
+            ).values("id", "name", "country__name", "visited", "visits", "last_visit"),
+            id=pk,
+        )
+        serializer = CitySerializer(city)
+        return Response(serializer.data)
+
+    def create(self, request):
+        data = request.data
+        city_name = data["name"]
+        state = data.get("state")
+        country = get_object_or_404(Country, pk=request["country"])
+        city_data = {
+            "name": city_name,
+            "visited": True,
+            "country": country,
+            "state": state,
+        }
+        location = get_location(city_name, country.name, state)
+        if location:
+            city_data["lat"] = location["lat"]
+            city_data["lon"] = location["lon"]
+            new_city = City(**city_data)
+            new_city.save()
+            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+        else:
+            messages.error(
+                request, f"Coordinates not found for city {city_name} in {country.name}"
+            )
+            return Response(
+                serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class StopViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for listing or retrieving users.
+    """
+
+    serializer_class = StopSerializer
+
+    def list(self, request):
+        stops = Stop.objects.values(
+            "city__country__name", "city__name", "arrival", "departure", "trip__title"
+        ).order_by("-departure")
+        serializer = StopsSerializer(stops, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = StopSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PlanViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for listing or retrieving users.
+    """
+
+    serializer_class = PlanSerializer
+
+    def list(self, request):
+        plans = Plan.objects.all()
+        serializer = PlanSerializer(plans, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        plan = get_object_or_404(Plan, id=pk)
+        serializer = PlanSerializer(plan)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = PlanSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
