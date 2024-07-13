@@ -1,5 +1,5 @@
 {
-  "name": "trips",
+  "name": "travel_log",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -19,6 +19,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@tanstack/react-table": "^8.19.2",
+    "axios": "^1.7.2",
     "framer-motion": "^11.2.14",
     "react": "latest",
     "react-dom": "latest",

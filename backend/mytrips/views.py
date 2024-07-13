@@ -108,7 +108,7 @@ class TripViewSet(viewsets.ViewSet):
     serializer_class = TripSerializer
 
     def list(self, request):
-        all_trips = Trip.objects.all()
+        all_trips = Trip.objects.all().order_by("-start")
         serializer = TripsSerializer(all_trips, many=True)
 
         return Response(serializer.data)

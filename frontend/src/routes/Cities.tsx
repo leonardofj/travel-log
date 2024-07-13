@@ -1,19 +1,16 @@
 import { DataTable } from "../components/DataTable";
 import HeaderWithButton from "../components/HeaderWithButton";
 import { createColumnHelper } from "@tanstack/react-table";
-import { cities } from "../data";
+import { useEffect, useState } from "react";
+import fetchData from "../fetchData";
 
 export type CityTable = {
   id: number;
   name: string;
-  visited: number;
-  country_id: number;
-  lat: number;
-  lon: number;
-  state: string;
+  visits: number;
+  country: string;
+  last_visit: string;
 };
-
-const data: CityTable[] = cities;
 
 const columnHelper = createColumnHelper<CityTable>();
 
@@ -22,20 +19,39 @@ const columns = [
     cell: (info) => info.getValue(),
     header: "City",
   }),
-  columnHelper.accessor("country_id", {
+  columnHelper.accessor("country", {
     cell: (info) => info.getValue(),
-    header: "Country ID",
+    header: "Country",
   }),
-  columnHelper.accessor("state", {
+  columnHelper.accessor("visits", {
     cell: (info) => info.getValue(),
-    header: "State",
+    header: "Visits",
     meta: {
       isNumeric: true,
     },
   }),
+  columnHelper.accessor("last_visit", {
+    cell: (info) => info.getValue(),
+    header: "Last visit",
+  }),
 ];
 
 const Cities = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchMyData = async () => {
+      const result = await fetchData("cities");
+      if (result.error) {
+        console.log(result.error);
+      } else {
+        setData(result.data);
+      }
+    };
+
+    fetchMyData();
+  }, []);
+
   return (
     <div>
       <HeaderWithButton title={"Cities"}></HeaderWithButton>

@@ -10,15 +10,31 @@ import {
 } from "@chakra-ui/react";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
-import { countries } from "../data";
+import { useEffect, useState } from "react";
+import fetchData from "../fetchData";
 
 const Countries = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchMyData = async () => {
+      const result = await fetchData("countries");
+      if (result.error) {
+        console.log(result.error);
+      } else {
+        setData(result.data);
+      }
+    };
+
+    fetchMyData();
+  }, []);
+
   return (
     <div>
       <Header title={"Countries"}></Header>
 
       <SimpleGrid spacing={2} minChildWidth="300px">
-        {countries.map((country) => (
+        {data.map((country) => (
           <Link to={`${country.id}`}>
             <Card m={2}>
               <Image
@@ -38,7 +54,7 @@ const Countries = () => {
                 <Flex>
                   <Text>{country.continent}</Text>
                   <Spacer />
-                  <Text>{country.id} visits</Text>
+                  <Text>{country.visits} visits</Text>
                 </Flex>
               </CardBody>
             </Card>
