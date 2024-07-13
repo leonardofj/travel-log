@@ -8,7 +8,11 @@ import {
   chakra,
   TableContainer,
 } from "@chakra-ui/react";
-import { ArrowDownIcon, ArrowUpIcon, ArrowUpDownIcon } from "@chakra-ui/icons";
+import {
+  ArrowUpDownIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from "@chakra-ui/icons";
 import {
   useReactTable,
   flexRender,
@@ -74,9 +78,9 @@ export function DataTable<Data extends object>({
                     <chakra.span pl="4">
                       {header.column.getIsSorted() ? (
                         header.column.getIsSorted() === "desc" ? (
-                          <ArrowDownIcon aria-label="sorted descending" />
+                          <ChevronDownIcon aria-label="sorted descending" />
                         ) : (
-                          <ArrowUpIcon aria-label="sorted ascending" />
+                          <ChevronUpIcon aria-label="sorted ascending" />
                         )
                       ) : (
                         <ArrowUpDownIcon aria-label="unsorted" />

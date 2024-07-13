@@ -1,20 +1,23 @@
 import { Badge, Box, Flex, List, ListItem, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import fetchData from "../fetchData";
 
-interface StatsProps {
-  countries: number;
-  cities: number;
-  trips: number;
-  continents: number;
-  total_duration: number;
-}
+const StatsBox = () => {
+  const [data, setData] = useState([]);
 
-const StatsBox = ({
-  countries,
-  cities,
-  trips,
-  continents,
-  total_duration,
-}: StatsProps) => {
+  useEffect(() => {
+    const fetchMyData = async () => {
+      const result = await fetchData("stats");
+      if (result.error) {
+        console.log(result.error);
+      } else {
+        setData(result.data);
+      }
+    };
+
+    fetchMyData();
+  }, []);
+
   return (
     <Box bg={"#E0E0E0"} p={4} my={3} borderRadius={15}>
       <List spacing={3}>
@@ -27,7 +30,7 @@ const StatsBox = ({
               borderRadius={15}
               px={2}
             >
-              {trips}
+              {data.trips}
             </Badge>
             <Text fontSize="1.2em" fontWeight={"bold"} mx={1}>
               trips
@@ -43,7 +46,7 @@ const StatsBox = ({
               borderRadius={15}
               px={2}
             >
-              {total_duration}
+              {data.total_duration}
             </Badge>
             <Text fontSize="1.2em" fontWeight={"bold"} mx={1}>
               days traveling
@@ -59,7 +62,7 @@ const StatsBox = ({
               borderRadius={15}
               px={2}
             >
-              {countries}
+              {data.countries}
             </Badge>
             <Text fontSize="1.2em" fontWeight={"bold"} mx={1}>
               countries
@@ -75,7 +78,7 @@ const StatsBox = ({
               borderRadius={15}
               px={2}
             >
-              {cities}
+              {data.cities}
             </Badge>
             <Text fontSize="1.2em" fontWeight={"bold"} mx={1}>
               cities
@@ -91,7 +94,7 @@ const StatsBox = ({
               borderRadius={15}
               px={2}
             >
-              {continents}
+              {data.continents}
             </Badge>
             <Text fontSize="1.2em" fontWeight={"bold"} mx={1}>
               continents
