@@ -1,4 +1,4 @@
-# trips
+# travel_log
 
 Small project to manage my trips
 

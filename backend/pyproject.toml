@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "trips"
+name = "travel_log"
 version = "0.1.0"
 description = ""
 authors = ["leonardofj <leonardofj@gmail.com>"]
@@ -10,6 +10,8 @@ python = "^3.10"
 Django = "^4.2.4"
 django-bootstrap-v5 = "^1.0.11"
 geopy = "^2.4.0"
+djangorestframework = "^3.15.2"
+django-cors-headers = "^4.4.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.7.0"
