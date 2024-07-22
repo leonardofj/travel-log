@@ -3,6 +3,9 @@ import HeaderWithButton from "../components/HeaderWithButton";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import fetchData from "../fetchData";
+import ModalForm from "../components/ModalForm";
+import CreateCityForm from "../components/CreateCityForm";
+import { useDisclosure } from "@chakra-ui/react";
 
 export type CityTable = {
   id: number;
@@ -37,25 +40,52 @@ const columns = [
 ];
 
 const Cities = () => {
-  const [data, setData] = useState([]);
+  const [citiesData, setCitiesData] = useState([]);
+  const [countriesData, setCountriesData] = useState([]);
+  const {
+    isOpen: isCityModalOpen,
+    onOpen: onCityModalOpen,
+    onClose: onCityModalClose,
+  } = useDisclosure();
 
   useEffect(() => {
-    const fetchMyData = async () => {
-      const result = await fetchData("cities");
-      if (result.error) {
-        console.log(result.error);
-      } else {
-        setData(result.data);
+    const fetchAllData = async () => {
+      try {
+        const [resultCities, resultCountries] = await Promise.all([
+          fetchData("cities"),
+          fetchData("countries"),
+        ]);
+
+        if (resultCities.error || resultCountries.error) {
+          console.log(
+            (resultCities.error || "") + (resultCountries.error || "")
+          );
+        } else {
+          setCitiesData(resultCities.data);
+          setCountriesData(resultCountries.data);
+        }
+      } catch (err) {
+        console.log("An unexpected error occurred while fetching data");
       }
     };
 
-    fetchMyData();
+    fetchAllData();
   }, []);
 
   return (
     <div>
-      <HeaderWithButton title={"Cities"}></HeaderWithButton>
-      <DataTable columns={columns} data={data} />
+      <HeaderWithButton
+        title={"Cities"}
+        onOpen={onCityModalOpen}
+      ></HeaderWithButton>
+      <ModalForm
+        isOpen={isCityModalOpen}
+        onClose={onCityModalClose}
+        title="Add new city"
+      >
+        <CreateCityForm onClose={onCityModalClose} countries={countriesData} />
+      </ModalForm>
+      <DataTable columns={columns} data={citiesData} />
     </div>
   );
 };

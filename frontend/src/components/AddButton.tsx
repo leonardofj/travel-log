@@ -1,7 +1,11 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 
-const AddButton = () => {
+interface AddButtonProps {
+  onOpen: () => void;
+}
+
+const AddButton = ({ onOpen }: AddButtonProps) => {
   return (
     <Button
       variant={"solid"}
@@ -11,6 +15,7 @@ const AddButton = () => {
       mr={4}
       leftIcon={<AddIcon />}
       _hover={{ bg: "#660000", color: "#FFBA08" }}
+      onClick={onOpen}
     >
       Add new
     </Button>

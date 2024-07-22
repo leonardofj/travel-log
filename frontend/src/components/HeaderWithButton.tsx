@@ -4,14 +4,19 @@ import AddButton from "./AddButton";
 interface HeaderWithButtonProps {
   title: string;
   size?: string;
+  onOpen: () => void;
 }
 
-const HeaderWithButton = ({ title, size = "xl" }: HeaderWithButtonProps) => {
+const HeaderWithButton = ({
+  title,
+  size = "xl",
+  onOpen,
+}: HeaderWithButtonProps) => {
   return (
     <Box m={4}>
       <HStack spacing="15px">
         <Heading size={size}>{title}</Heading>
-        <AddButton />
+        <AddButton onOpen={onOpen} />
       </HStack>
       <Divider my={2} />
     </Box>
