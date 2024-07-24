@@ -133,3 +133,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MESSAGE_TAGS = {
     40: "danger",
 }
+
+APPEND_SLASH = True

@@ -7,6 +7,7 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
+import { saveData } from "../saveData";
 
 interface CreateCityFormProps {
   onClose: () => void;
@@ -17,11 +18,20 @@ const CreateCityForm = ({ onClose, countries }: CreateCityFormProps) => {
   const [city, setCity] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
   const [state, setState] = useState("");
-  const handleSubmit = (event) => {
-    // console.log(api);
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     console.log(`city: ${city}, state: ${state}, country: ${selectedCountry}`);
-    onClose();
+    try {
+      const res = await saveData<object>({
+        path: "cities",
+        data: { city: city, state: state, country: selectedCountry },
+      });
+      console.log(res.data);
+      onClose();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error making POST request:", error);
+    }
   };
 
   return (

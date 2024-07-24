@@ -53,7 +53,8 @@ class CitiesSerializer(serializers.ModelSerializer):
 class CitySerializer(serializers.ModelSerializer):
     visits = serializers.ReadOnlyField()
     last_visit = serializers.ReadOnlyField()
-    # country = serializers.CharField(source="country__name")
+    country = serializers.CharField(source="country__name")
+    state = serializers.CharField(allow_blank=True)
 
     class Meta:
         model = City
