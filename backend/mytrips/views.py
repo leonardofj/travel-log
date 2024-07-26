@@ -143,7 +143,17 @@ class CityViewSet(viewsets.ViewSet):
             City.objects.annotate(
                 visits=Count("stop__trip", distinct=True),
                 last_visit=Max("stop__departure"),
-            ).values("id", "name", "country__name", "visited", "visits", "last_visit"),
+            ).values(
+                "id",
+                "name",
+                "country__name",
+                "state",
+                "visited",
+                "visits",
+                "last_visit",
+                "lat",
+                "lon",
+            ),
             id=pk,
         )
         serializer = CitySerializer(city)
@@ -151,9 +161,9 @@ class CityViewSet(viewsets.ViewSet):
 
     def create(self, request):
         data = request.data
-        city_name = data["name"]
+        city_name = data["city"]
         state = data.get("state")
-        country = get_object_or_404(Country, pk=request["country"])
+        country = get_object_or_404(Country, pk=data["country"])
         city_data = {
             "name": city_name,
             "visited": True,
@@ -166,13 +176,16 @@ class CityViewSet(viewsets.ViewSet):
             city_data["lon"] = location["lon"]
             new_city = City(**city_data)
             new_city.save()
-            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+            return Response({}, status=status.HTTP_201_CREATED)
         else:
             messages.error(
                 request, f"Coordinates not found for city {city_name} in {country.name}"
-            )
+            )  # ?
             return Response(
-                serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {
+                    "message": f"Coordinates not found for city {city_name} in {country.name}"
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
 
