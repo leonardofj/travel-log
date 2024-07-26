@@ -232,5 +232,30 @@ class PlanViewSet(viewsets.ViewSet):
         serializer = PlanSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TagViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for listing or retrieving users.
+    """
+
+    serializer_class = TagSerializer
+
+    def list(self, request):
+        tags = Tag.objects.all()
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        tag = get_object_or_404(Tag, id=pk)
+        serializer = TagSerializer(tag)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = TagSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
             return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
