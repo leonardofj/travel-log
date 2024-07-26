@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Select,
-} from "@chakra-ui/react";
+import { Box, Button, FormControl, FormLabel, Input } from "@chakra-ui/react";
 import { saveData } from "../saveData";
 import fetchData from "../fetchData";
+import MultiSelect from "./MultiSelect";
+import { MultiSelectOption } from "./interfaces";
 
 interface CreatePlanFormProps {
   onClose: () => void;
@@ -18,8 +13,8 @@ const CreatePlanForm = ({ onClose }: CreatePlanFormProps) => {
   const [title, setTitle] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
-  const [selectedTags, setSelectedTags] = useState("");
-  const [selectedCities, setSelectedCities] = useState("");
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [selectedCities, setSelectedCities] = useState<number[]>([]);
   const [tags, setTags] = useState([]);
   const [cities, setCities] = useState([]);
 
@@ -50,7 +45,13 @@ const CreatePlanForm = ({ onClose }: CreatePlanFormProps) => {
     try {
       const res = await saveData<object>({
         path: "plans",
-        data: { title: title, start: start, end: end },
+        data: {
+          title: title,
+          start: start,
+          end: end,
+          tags: selectedTags,
+          cities: selectedCities,
+        },
       });
       console.log(res.data);
       onClose();
@@ -59,6 +60,16 @@ const CreatePlanForm = ({ onClose }: CreatePlanFormProps) => {
       console.error("Error making POST request:", error);
     }
   };
+
+  const optionsTags: MultiSelectOption[] = tags.map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+
+  const optionsCities: MultiSelectOption[] = cities.map((item) => ({
+    label: `${item.name}, ${item.country}`,
+    value: item.id,
+  }));
 
   return (
     <Box>
@@ -90,36 +101,23 @@ const CreatePlanForm = ({ onClose }: CreatePlanFormProps) => {
             onChange={(event) => setEnd(event.currentTarget.value)}
           />
         </FormControl>
-        <FormControl mt={6}>
-          <FormLabel>Tags</FormLabel>
-          <Select
-            placeholder="Select tags"
-            multiple={true}
-            onChange={(event) => setSelectedTags(event.currentTarget.value)}
-            value={selectedTags}
-          >
-            {tags.map((tag) => (
-              <option key={tag.id} value={tag.id}>
-                {tag.name}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl mt={6}>
-          <FormLabel>Cities</FormLabel>
-          <Select
-            placeholder="Select cities"
-            multiple={true}
-            onChange={(event) => setSelectedCities(event.currentTarget.value)}
-            value={selectedCities}
-          >
-            {cities.map((city) => (
-              <option key={city.id} value={city.id}>
-                {city.name}, {city.country}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
+        <MultiSelect
+          mt={6}
+          label="Tags"
+          options={optionsTags}
+          placeholder="tags"
+          selectedOptions={selectedTags}
+          setSelectedOptions={setSelectedTags}
+        />
+        <MultiSelect
+          mt={6}
+          label="Cities"
+          options={optionsCities}
+          placeholder="cities"
+          selectedOptions={selectedCities}
+          setSelectedOptions={setSelectedCities}
+        />
+
         <Button colorScheme="blue" mt={5} mb={3} onClick={handleSubmit}>
           Submit
         </Button>
