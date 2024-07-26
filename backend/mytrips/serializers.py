@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import City, Plan, Stop, Trip, Country
+from .models import City, Plan, Stop, Tag, Trip, Country
 
 
 class StatsSerializer(serializers.Serializer):
@@ -82,4 +82,11 @@ class PlanSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Plan
+        fields = "__all__"
+
+
+class TagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tag
         fields = "__all__"

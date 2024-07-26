@@ -10,7 +10,7 @@ class CountryAdmin(admin.ModelAdmin):
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
-    list_display = ("name", "country", "lat", "lon", "state")
+    list_display = ("name", "country", "lat", "lon", "state", "visited")
     search_fields = ["name"]
     autocomplete_fields = ["country"]
 

@@ -10,5 +10,6 @@ router.register(r"trips", views.TripViewSet, basename="trips")
 router.register(r"cities", views.CityViewSet, basename="cities")
 router.register(r"stops", views.StopViewSet, basename="stops")
 router.register(r"plans", views.PlanViewSet, basename="plans")
+router.register(r"tags", views.TagViewSet, basename="tags")
 
 urlpatterns = [path("", include(router.urls))]
