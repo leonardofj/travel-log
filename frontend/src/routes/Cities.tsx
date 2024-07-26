@@ -41,7 +41,6 @@ const columns = [
 
 const Cities = () => {
   const [citiesData, setCitiesData] = useState([]);
-  const [countriesData, setCountriesData] = useState([]);
   const {
     isOpen: isCityModalOpen,
     onOpen: onCityModalOpen,
@@ -49,27 +48,20 @@ const Cities = () => {
   } = useDisclosure();
 
   useEffect(() => {
-    const fetchAllData = async () => {
+    const fetchCities = async () => {
       try {
-        const [resultCities, resultCountries] = await Promise.all([
-          fetchData("cities"),
-          fetchData("countries"),
-        ]);
-
-        if (resultCities.error || resultCountries.error) {
-          console.log(
-            (resultCities.error || "") + (resultCountries.error || "")
-          );
+        const resultCities = await fetchData("cities");
+        if (resultCities.error) {
+          console.log(resultCities.error);
         } else {
           setCitiesData(resultCities.data);
-          setCountriesData(resultCountries.data);
         }
       } catch (err) {
         console.log("An unexpected error occurred while fetching data");
       }
     };
 
-    fetchAllData();
+    fetchCities();
   }, []);
 
   return (
@@ -83,7 +75,7 @@ const Cities = () => {
         onClose={onCityModalClose}
         title="Add new city"
       >
-        <CreateCityForm onClose={onCityModalClose} countries={countriesData} />
+        <CreateCityForm onClose={onCityModalClose} />
       </ModalForm>
       <DataTable columns={columns} data={citiesData} />
     </div>

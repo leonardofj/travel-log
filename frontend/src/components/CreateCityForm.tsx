@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -8,16 +8,35 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { saveData } from "../saveData";
+import fetchData from "../fetchData";
 
 interface CreateCityFormProps {
   onClose: () => void;
-  countries: any[];
 }
 
-const CreateCityForm = ({ onClose, countries }: CreateCityFormProps) => {
+const CreateCityForm = ({ onClose }: CreateCityFormProps) => {
   const [city, setCity] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
   const [state, setState] = useState("");
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const result = await fetchData("countries");
+        if (result.error) {
+          console.log(result.error);
+        } else {
+          setCountries(result.data);
+        }
+      } catch (err) {
+        console.log("An unexpected error occurred while fetching data");
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     console.log(`city: ${city}, state: ${state}, country: ${selectedCountry}`);
