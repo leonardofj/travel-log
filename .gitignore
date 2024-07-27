@@ -183,7 +183,6 @@ dist-ssr
 *.sln
 *.sw?
 
-
 backend/mytrips/migrations/
 backend/mytrips/static/admin
 backend/mytrips/data/
@@ -191,3 +190,4 @@ frontend/.yarn
 frontend/.pnp*
 frontend/.eslintrc.cjs
 .vscode
+db_backup
