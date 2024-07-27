@@ -62,6 +62,9 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class StopsSerializer(serializers.ModelSerializer):
+    city = serializers.CharField(source="city__name")
+    country = serializers.CharField(source="city__country__name")
+    trip = serializers.CharField(source="trip__title")
 
     class Meta:
         model = Stop
