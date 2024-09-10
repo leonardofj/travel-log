@@ -1,10 +1,7 @@
 from datetime import datetime
-
 from django.contrib import messages
 from django.db.models import Count, Max
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from mytrips.serializers import *
 from mytrips.utils.geolocations import get_location
 from rest_framework import status, viewsets
@@ -12,46 +9,6 @@ from rest_framework.response import Response
 from .models import City, Country, PackingItem, Plan, Stop, Tag, Trip
 
 HOME = 5  # city_id of home
-
-
-def add_stops(request):
-    cities = request.POST.getlist("city")
-    arrivals = request.POST.getlist("arrival")
-    departures = request.POST.getlist("departure")
-    trip = None
-    last_stop = Stop.objects.order_by("-departure").first().departure.date()
-    if request.POST["trip"]:
-        trip_data = {
-            "title": request.POST["trip"],
-            "start": datetime.strptime(min(arrivals), "%Y-%m-%dT%H:%M").date(),
-            "end": datetime.strptime(max(departures), "%Y-%m-%dT%H:%M").date(),
-        }
-        trip = Trip(**trip_data)
-        trip.save()
-
-    # adding time at home between trips
-    if last_stop < datetime.strptime(min(arrivals), "%Y-%m-%dT%H:%M").date():
-        home_time = Stop(
-            city=get_object_or_404(City, pk=HOME),
-            arrival=datetime.fromisoformat(last_stop.isoformat() + " 14:00"),
-            departure=datetime.strptime(min(arrivals), "%Y-%m-%dT%H:%M"),
-        )
-        home_time.save()
-
-    for index, city_id in enumerate(cities):
-        arrival = arrivals[index]
-        departure = departures[index]
-        stop_data = {
-            "city": get_object_or_404(City, pk=city_id),
-            "arrival": datetime.strptime(arrival, "%Y-%m-%dT%H:%M"),
-            "departure": datetime.strptime(departure, "%Y-%m-%dT%H:%M"),
-        }
-        if trip:
-            stop_data["trip"] = trip
-        stop = Stop(**stop_data)
-        stop.save()
-
-    return HttpResponseRedirect(reverse("stops"))
 
 
 class StatsViewSet(viewsets.ViewSet):
@@ -204,11 +161,46 @@ class StopViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        serializer = StopSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        stops = data["stops"]
+        trip_title = data.get("trip")
+        trip_start = datetime.strptime(stops[0]["arrival"], "%Y-%m-%dT%H:%M")
+        trip_end = datetime.strptime(stops[-1]["departure"], "%Y-%m-%dT%H:%M")
+        last_stop = Stop.objects.order_by("-departure").first().departure.date()
+
+        if trip_title:
+            trip_data = {
+                "title": trip_title,
+                "start": trip_start.date(),
+                "end": trip_end.date(),
+            }
+            trip = Trip(**trip_data)
+            trip.save()
+
+        # adding time at home between trips
+        if last_stop < trip_start.date():
+            home_time = Stop(
+                city=get_object_or_404(City, pk=HOME),
+                arrival=datetime.fromisoformat(last_stop.isoformat() + " 14:00"),
+                departure=trip_start,
+            )
+            home_time.save()
+
+        # saving stops
+        for stop_entry in stops:
+            stop_data = {
+                "city": get_object_or_404(City, pk=stop_entry["city"]),
+                "arrival": datetime.strptime(stop_entry["arrival"], "%Y-%m-%dT%H:%M"),
+                "departure": datetime.strptime(
+                    stop_entry["departure"], "%Y-%m-%dT%H:%M"
+                ),
+            }
+            if trip_title:
+                stop_data["trip"] = trip
+            stop = Stop(**stop_data)
+            stop.save()
+
+        return Response({}, status=status.HTTP_201_CREATED)
 
 
 class PlanViewSet(viewsets.ViewSet):

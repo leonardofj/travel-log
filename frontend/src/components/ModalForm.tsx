@@ -11,12 +11,19 @@ interface ModalFormProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
+  size?: string;
   children: React.ReactNode;
 }
 
-const ModalForm = ({ isOpen, onClose, title, children }: ModalFormProps) => {
+const ModalForm = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  size = "md",
+}: ModalFormProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size={size}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
