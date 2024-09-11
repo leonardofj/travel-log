@@ -1,13 +1,17 @@
-import { Box, Divider, Heading } from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading } from "@chakra-ui/react";
 
 interface HeaderProps {
   title: string;
+  children: React.ReactNode;
 }
 
-const Header = ({ title }: HeaderProps) => {
+const Header = ({ title, children }: HeaderProps) => {
   return (
     <Box m={4}>
-      <Heading as={"h2"}>{title}</Heading>
+      <Flex>
+        <Heading as={"h2"}>{title}</Heading>
+        {children}
+      </Flex>
       <Divider my={2} />
     </Box>
   );
