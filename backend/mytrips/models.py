@@ -7,6 +7,7 @@ class Country(models.Model):
     name = models.CharField(max_length=255, unique=True)
     visited = models.BooleanField(default=False)
     need_visa = models.BooleanField(default=None, null=True)
+    visa_detail = models.CharField(max_length=255, default=None, null=True)
     lat = models.DecimalField(max_digits=9, decimal_places=6)
     lon = models.DecimalField(max_digits=9, decimal_places=6)
     continent = models.CharField(max_length=25, choices=CONTINENTS, null=True)

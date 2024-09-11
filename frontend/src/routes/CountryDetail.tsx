@@ -40,7 +40,14 @@ const CountryDetail = () => {
           ["Capital", country.capital],
           ["Currency", country.currency],
           ["Language", country.language],
-          ["Visa", country.need_visa ? "yes" : "no"],
+          [
+            "Visa",
+            country.visa_detail
+              ? country.visa_detail
+              : country.need_visa
+              ? "yes"
+              : "no",
+          ],
         ]}
       ></SideBox>
     </div>
