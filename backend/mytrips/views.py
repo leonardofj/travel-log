@@ -40,13 +40,22 @@ class CountryViewSet(viewsets.ViewSet):
     """
 
     def list(self, request):
+        visited = request.query_params.get("visited")
+        # TODO: use boolean
+        if visited == "0":
+            filter = {}
+            sort = ["name"]
+        else:
+            filter = {"visited": True}
+            sort = ["-last_visit", "visits"]
+
         all_countries = (
-            Country.objects.filter(visited=True)
+            Country.objects.filter(**filter)
             .annotate(
                 visits=Count("city__stop__trip", distinct=True),
                 last_visit=Max("city__stop__trip__end"),
             )
-            .order_by("-last_visit", "visits")
+            .order_by(*sort)
         )
         serializer = CountriesSerializer(all_countries, many=True)
         return Response(serializer.data)
