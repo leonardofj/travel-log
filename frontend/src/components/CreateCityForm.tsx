@@ -23,7 +23,7 @@ const CreateCityForm = ({ onClose }: CreateCityFormProps) => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const result = await fetchData("countries");
+        const result = await fetchData("countries/?visited=0");
         if (result.error) {
           console.log(result.error);
         } else {

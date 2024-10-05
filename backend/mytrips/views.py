@@ -42,7 +42,7 @@ class CountryViewSet(viewsets.ViewSet):
     def list(self, request):
         visited = request.query_params.get("visited")
         # TODO: use boolean
-        if visited == "0":
+        if visited == "false":
             filter = {}
             sort = ["name"]
         else:
