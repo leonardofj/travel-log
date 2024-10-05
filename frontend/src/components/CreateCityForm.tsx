@@ -7,8 +7,8 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import { saveData } from "../saveData";
-import fetchData from "../fetchData";
+import { saveData } from "../utils/saveData";
+import fetchData from "../utils/fetchData";
 
 interface CreateCityFormProps {
   onClose: () => void;
@@ -23,7 +23,7 @@ const CreateCityForm = ({ onClose }: CreateCityFormProps) => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const result = await fetchData("countries");
+        const result = await fetchData("countries/?visited=0");
         if (result.error) {
           console.log(result.error);
         } else {

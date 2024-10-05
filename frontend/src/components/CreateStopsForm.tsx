@@ -12,8 +12,8 @@ import {
   Flex,
   Spacer,
 } from "@chakra-ui/react";
-import { saveData } from "../saveData";
-import fetchData from "../fetchData";
+import { saveData } from "../utils/saveData";
+import fetchData from "../utils/fetchData";
 
 interface CreateStopsFormProps {
   onClose: () => void;

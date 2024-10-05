@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, FormControl, FormLabel, Input } from "@chakra-ui/react";
-import { saveData } from "../saveData";
-import fetchData from "../fetchData";
+import { saveData } from "../utils/saveData";
+import fetchData from "../utils/fetchData";
 import MultiSelect from "./MultiSelect";
 import { MultiSelectOption } from "./interfaces";
 

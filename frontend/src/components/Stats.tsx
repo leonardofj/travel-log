@@ -1,6 +1,6 @@
 import { Badge, Box, Flex, List, ListItem, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import fetchData from "../fetchData";
+import fetchData from "../utils/fetchData";
 
 const StatsBox = () => {
   const [data, setData] = useState([]);
@@ -19,7 +19,7 @@ const StatsBox = () => {
   }, []);
 
   return (
-    <Box bg={"#E0E0E0"} p={4} my={3} borderRadius={15}>
+    <Box bg={"#e6f1f7"} p={4} my={3} borderRadius={15}>
       <List spacing={3}>
         <ListItem>
           <Flex>
