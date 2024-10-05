@@ -74,7 +74,16 @@ class TripViewSet(viewsets.ViewSet):
     serializer_class = TripSerializer
 
     def list(self, request):
-        all_trips = Trip.objects.all().order_by("-start")
+        country = request.query_params.get("country")
+        city = request.query_params.get("city")
+        if city:
+            filter = {"stop__city__id": city}
+        elif country:
+            filter = {"stop__city__country__id": country}
+        else:
+            filter = {}
+
+        all_trips = Trip.objects.filter(**filter).distinct().order_by("-start")
         serializer = TripsSerializer(all_trips, many=True)
 
         return Response(serializer.data)
@@ -93,8 +102,15 @@ class CityViewSet(viewsets.ViewSet):
     serializer_class = CitySerializer
 
     def list(self, request):
+        country = request.query_params.get("country")
+        if country:
+            filter = {"country__id": country}
+        else:
+            filter = {}
+
         cities = (
-            City.objects.annotate(
+            City.objects.filter(**filter)
+            .annotate(
                 visits=Count("stop__trip", distinct=True),
                 last_visit=Max("stop__departure"),
             )
