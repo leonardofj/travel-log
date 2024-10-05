@@ -13,7 +13,7 @@ import {
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import fetchData from "../fetchData";
+import fetchData from "../utils/fetchData";
 
 const Countries = () => {
   const [data, setData] = useState([]);

@@ -1,7 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import HeaderWithButton from "../components/HeaderWithButton";
 import { useEffect, useState } from "react";
-import fetchData from "../fetchData";
+import fetchData from "../utils/fetchData";
 import { useDisclosure } from "@chakra-ui/react";
 import ModalForm from "../components/ModalForm";
 import { DataTable } from "../components/DataTable";

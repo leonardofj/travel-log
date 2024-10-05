@@ -12,7 +12,7 @@ import {
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import fetchData from "../fetchData";
+import fetchData from "../utils/fetchData";
 import SideBox from "../components/SideBox";
 import TripCard from "../components/TripCard";
 
@@ -99,7 +99,7 @@ const CountryDetail = () => {
             id={trip.id}
             title={trip.title}
             duration={trip.duration}
-            timeAgo={trip.end}
+            date={trip.end}
             countries={trip.countries}
           ></TripCard>
         ))}

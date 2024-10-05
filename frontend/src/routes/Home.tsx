@@ -4,7 +4,7 @@ import PlanCard from "../components/PlanCard";
 import TripCard from "../components/TripCard";
 import HeaderWithButton from "../components/HeaderWithButton";
 import { useEffect, useState } from "react";
-import fetchData from "../fetchData";
+import fetchData from "../utils/fetchData";
 import ModalForm from "../components/ModalForm";
 import CreatePlanForm from "../components/CreatePlanForm";
 
@@ -44,6 +44,7 @@ const Home = () => {
 
     fetchAllData();
   }, []);
+
   return (
     <div className="Home">
       <Box p={4}>
@@ -95,7 +96,7 @@ const Home = () => {
               id={trip.id}
               title={trip.title}
               duration={trip.duration}
-              timeAgo={trip.end}
+              date={trip.end}
               countries={trip.countries}
             ></TripCard>
           ))}

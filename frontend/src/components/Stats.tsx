@@ -1,6 +1,6 @@
 import { Badge, Box, Flex, List, ListItem, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import fetchData from "../fetchData";
+import fetchData from "../utils/fetchData";
 
 const StatsBox = () => {
   const [data, setData] = useState([]);
