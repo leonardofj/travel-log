@@ -19,7 +19,7 @@ const StatsBox = () => {
   }, []);
 
   return (
-    <Box bg={"#E0E0E0"} p={4} my={3} borderRadius={15}>
+    <Box bg={"#e6f1f7"} p={4} my={3} borderRadius={15}>
       <List spacing={3}>
         <ListItem>
           <Flex>

@@ -36,7 +36,7 @@ const Countries = () => {
       <SimpleGrid spacing={2} minChildWidth="300px">
         {data.map((country) => (
           <Link to={`${country.id}`}>
-            <Card m={2}>
+            <Card m={2} bg={"#e6f1f7"}>
               <Image
                 style={{ width: "300px", height: "200px" }}
                 objectFit="cover"
@@ -54,7 +54,9 @@ const Countries = () => {
                 <Flex>
                   <Text>{country.continent}</Text>
                   <Spacer />
-                  <Text>{country.visits} visits</Text>
+                  <Text>
+                    {country.visits} trip{country.visits !== 1 ? "s" : ""}
+                  </Text>
                 </Flex>
               </CardBody>
             </Card>
