@@ -92,6 +92,7 @@ const Home = () => {
         <SimpleGrid spacing={2} minChildWidth="300px">
           {tripsData.map((trip) => (
             <TripCard
+              id={trip.id}
               title={trip.title}
               duration={trip.duration}
               timeAgo={trip.end}

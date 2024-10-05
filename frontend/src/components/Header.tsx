@@ -2,7 +2,7 @@ import { Box, Divider, Flex, Heading } from "@chakra-ui/react";
 
 interface HeaderProps {
   title: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const Header = ({ title, children }: HeaderProps) => {
