@@ -47,7 +47,9 @@ const Countries = () => {
                   <Heading size="md">{country.name}</Heading>
                   <Spacer />
                   <Image
-                    boxSize="40px"
+                    height="30px"
+                    border="1px solid"
+                    borderColor="gray"
                     src={`/assets/icons/flags/4x3/${country.iso_code}.svg`}
                   />
                 </Flex>

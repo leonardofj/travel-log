@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .utils.choices import CURRENCIES, LANGUAGES
 from .models import City, Plan, Stop, Tag, Trip, Country
 
 
@@ -35,9 +36,20 @@ class CountriesSerializer(serializers.ModelSerializer):
 
 
 class CountrySerializer(serializers.ModelSerializer):
+    language = serializers.SerializerMethodField()
+    currency = serializers.SerializerMethodField()
+
     class Meta:
         model = Country
         fields = "__all__"
+
+    def get_language(self, obj):
+        languages_dict = dict(LANGUAGES)
+        return languages_dict.get(obj.language, obj.language)
+
+    def get_currency(self, obj):
+        currencies_dict = dict(CURRENCIES)
+        return f"{currencies_dict.get(obj.currency, obj.currency)} ({obj.currency})"
 
 
 class CitiesSerializer(serializers.ModelSerializer):

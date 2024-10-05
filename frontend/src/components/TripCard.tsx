@@ -36,6 +36,8 @@ const TripCard = ({
             {countries.map((country) => (
               <Image
                 borderRadius="full"
+                border="1px solid"
+                borderColor="gray"
                 boxSize="30px"
                 src={`/assets/icons/flags/1x1/${country}.svg`}
               />

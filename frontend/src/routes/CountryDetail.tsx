@@ -54,7 +54,9 @@ const CountryDetail = () => {
     <div>
       <Header title={country.name}>
         <Image
-          boxSize="50px"
+          height="40px"
+          border="1px solid"
+          borderColor="gray"
           ms={50}
           src={`/assets/icons/flags/4x3/${country.iso_code}.svg`}
         />
