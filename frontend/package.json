@@ -26,7 +26,10 @@
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "^6.24.1",
-    "s": "^1.0.0"
+    "react-simple-maps": "^3.0.0",
+    "s": "^1.0.0",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
   },
   "devDependencies": {
     "@types/react": "latest",

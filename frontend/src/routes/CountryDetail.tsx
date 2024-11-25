@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import fetchData from "../utils/fetchData";
 import SideBox from "../components/SideBox";
 import TripCard from "../components/TripCard";
+import WorldMap from "../components/CountryMap";
 
 const CountryDetail = () => {
   const { id } = useParams();
@@ -90,6 +91,9 @@ const CountryDetail = () => {
               ))}
             </HStack>
           </UnorderedList>
+          <Box m={4}>
+            <WorldMap />
+          </Box>
         </Box>
       </Flex>
       <Header title={"Trips"}></Header>
