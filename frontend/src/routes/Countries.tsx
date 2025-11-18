@@ -66,8 +66,12 @@ const Countries = () => {
                   <Spacer />
                   <Image
                     height="30px"
-                    border="1px solid"
-                    borderColor="gray"
+                    border={
+                      country.iso_code === "np" ? "none" : "1px  solid gray"
+                    }
+                    borderLeft={
+                      country.iso_code === "np" ? "1px solid gray" : undefined
+                    }
                     src={`/assets/icons/flags/4x3/${country.iso_code}.svg`}
                   />
                 </Flex>
