@@ -8,6 +8,7 @@ CONTINENTS = [
 ]
 
 CURRENCIES = [
+    ("-", "-"),
     ("EUR", "Euro"),
     ("AED", "UAE Dirham"),
     ("AFN", "Afghan Afghani"),
@@ -162,6 +163,7 @@ CURRENCIES = [
 ]
 
 LANGUAGES = [
+    ("-", "-"),
     ("af", "Afrikaans"),
     # ("ak", "Akan"),
     ("sq", "Albanian"),
