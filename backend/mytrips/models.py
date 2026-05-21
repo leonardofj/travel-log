@@ -81,9 +81,9 @@ class Trip(models.Model):
         trip_countries = (
             Stop.objects.filter(trip=self)
             .order_by("arrival")
-            .values("city__country__iso_code")
+            .values_list("city__country__iso_code", flat=True)
         )
-        return list({x["city__country__iso_code"] for x in trip_countries})
+        return list(dict.fromkeys(trip_countries))
 
 
 class Tag(models.Model):
