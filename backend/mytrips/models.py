@@ -85,6 +85,18 @@ class Trip(models.Model):
         )
         return list(dict.fromkeys(trip_countries))
 
+    @property
+    def cities(self):
+        locations = (
+            Stop.objects.filter(trip=self)
+            .order_by("arrival")
+            .values_list("city__name", "city__country__name")
+        )
+        return [
+            {"name": city, "country": country}
+            for city, country in dict.fromkeys(locations)
+        ]
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)

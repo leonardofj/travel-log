@@ -90,7 +90,7 @@ class TripViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         trip = get_object_or_404(Trip, id=pk)
-        serializer = TripSerializer(trip)
+        serializer = TripDetailSerializer(trip)
         return Response(serializer.data)
 
 

@@ -27,6 +27,45 @@ class TripSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class TripStopSerializer(serializers.ModelSerializer):
+    city = serializers.CharField(source="city.name", read_only=True)
+    city_id = serializers.IntegerField(source="city.id", read_only=True)
+    country = serializers.CharField(source="city.country.name", read_only=True)
+    country_iso = serializers.CharField(source="city.country.iso_code", read_only=True)
+
+    class Meta:
+        model = Stop
+        fields = ["id", "city", "city_id", "country", "country_iso", "arrival", "departure"]
+
+
+class TripDetailSerializer(serializers.ModelSerializer):
+    duration = serializers.ReadOnlyField()
+    countries = serializers.ReadOnlyField()
+    cities = serializers.ReadOnlyField()
+    stops = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Trip
+        fields = [
+            "id",
+            "title",
+            "start",
+            "end",
+            "duration",
+            "countries",
+            "cities",
+            "stops",
+        ]
+
+    def get_stops(self, obj):
+        stops = (
+            Stop.objects.filter(trip=obj)
+            .select_related("city", "city__country")
+            .order_by("arrival")
+        )
+        return TripStopSerializer(stops, many=True).data
+
+
 class CountriesSerializer(serializers.ModelSerializer):
     visits = serializers.IntegerField()
 
